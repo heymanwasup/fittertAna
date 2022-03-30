@@ -26,7 +26,7 @@ void fitTree::Loop(int events)
       if (events>0 && jentry>=events) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       
-      if(jentry%100000==0) {
+      if(jentry%1000000==0) {
          std::cout << "Processed "<< jentry << std::endl;
       }
 
