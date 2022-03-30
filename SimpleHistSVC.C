@@ -24,6 +24,10 @@ void SimpleHistSVC::ResetCaloTag() {
     this->caloIndex = default_int;
 }
 
+void SimpleHistSVC::ResetIslandTag() {
+    this->islandNums = default_int;
+}
+
 void SimpleHistSVC::SetXtalTag(int xtalIndex) {
     this->xtalIndex = xtalIndex;
 }

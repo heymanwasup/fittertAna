@@ -74,6 +74,7 @@ public :
    virtual void     SetFile(TTree *tree, TDirectory *file);
    virtual void     WriteToFile();
    virtual void     Ana_deltaT();
+   virtual void     FillHists(const double & e0,const double & e1,const double & t0,const double & t1,const double & DT,const double & rE);
 };
 
 #endif

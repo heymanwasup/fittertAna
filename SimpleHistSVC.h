@@ -38,6 +38,7 @@ class SimpleHistSVC {
         void SetIslandNums(int islandNums);
         void SetTimeTag(int timeTag);
         void ResetTimeTag();
+        void ResetIslandTag();
         void InitNameTags();
         void Init();
         void BookFile(TDirectory *file);
