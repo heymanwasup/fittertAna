@@ -4,12 +4,25 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void fitTree::FillHists(const double & e0,const double & e1,const double & t0,const double & t1,const double & DT,const double & rE) {
+void fitTree::FillHists(const double & e0,const double & e1,const double & t0,const double & t1,const double & DT,const double & rE,const bool &single_island) {
+
+   
    histSvc->BookFillHist("deltaT",1600,-800,800,DT);
    histSvc->BookFillHist("deltaT_vs_t0",1600,-800,800,200,0,600e3,DT,t0);
    histSvc->BookFillHist("deltaT_vs_E0",1600,-800,800,4000,0,4e3,DT,e0);
    histSvc->BookFillHist("deltaT_vs_E1",1600,-800,800,4000,0,4e3,DT,e1);
    histSvc->BookFillHist("deltaT_vs_rE",1600,-800,800,1000,0,1,DT,rE);
+
+   if(single_island){
+      histSvc->SetIslandNums(single_island);
+      histSvc->BookFillHist("deltaT",1600,-800,800,DT);
+      histSvc->BookFillHist("deltaT_vs_t0",1600,-800,800,200,0,600e3,DT,t0);
+      histSvc->BookFillHist("deltaT_vs_E0",1600,-800,800,4000,0,4e3,DT,e0);
+      histSvc->BookFillHist("deltaT_vs_E1",1600,-800,800,4000,0,4e3,DT,e1);
+      histSvc->BookFillHist("deltaT_vs_rE",1600,-800,800,1000,0,1,DT,rE);
+   }
+   histSvc->ResetIslandTag();
+
 }
 
 void fitTree::Loop(int events)
@@ -30,10 +43,10 @@ void fitTree::Loop(int events)
          std::cout << "Processed "<< jentry << std::endl;
       }
 
-      histSvc->InitNameTags();
-      histSvc->SetProcessTag("fitter_ana");
+      
 
       if(m_task=="deltaT") {
+
          Ana_deltaT();
       }
 
@@ -41,6 +54,9 @@ void fitTree::Loop(int events)
 }
 
 void fitTree::Ana_deltaT() {
+   histSvc->InitNameTags();
+   histSvc->SetProcessTag("fitter_ana");
+
    //only consider fit results with >1 hits
    if(energies->size()!=2) return;
 
@@ -69,20 +85,12 @@ void fitTree::Ana_deltaT() {
    double DT = t1 - t0;
    double rE = e1/e0;
 
-   FillHists(e0,e1,t0,e1,DT,rE);
-   if(single_island) {
-      histSvc->SetIslandNums(single_island);
-      FillHists(e0,e1,t0,e1,DT,rE);
+   FillHists(e0,e1,t0,e1,DT,rE,single_island);
+   if(caloNum==1) {
+      histSvc->SetCaloTag(caloNum);
+      FillHists(e0,e1,t0,e1,DT,rE,single_island);
+      histSvc->SetXtalTag(xtalNum);
+      FillHists(e0,e1,t0,e1,DT,rE,single_island);
    }
 
-   histSvc->ResetIslandTag();
-   if(xtalNum==0&&caloNum==1) {
-      histSvc->SetCaloTag(caloNum);
-      histSvc->SetXtalTag(xtalNum);
-      FillHists(e0,e1,t0,e1,DT,rE);
-      if(single_island) {
-         histSvc->SetIslandNums(single_island);
-         FillHists(e0,e1,t0,e1,DT,rE);
-      }
-   }
 }
