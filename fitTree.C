@@ -36,23 +36,44 @@ void fitTree::Ana_deltaT() {
    for(auto laserHit : *laserHits) {
       if(laserHit) return;
    }
+   
    bool single_island = false;
    if(islandNums->size()==1 && chainedIslandNums->size()==1) single_island = true;
 
-   double e0 = energies->at(0);
-   double e1 = energies->at(1);
-   double t0 = times->at(0);
-   double t1 = times->at(1);
-   
-   double t = e0>t1?t0 : t1;
-   double DT_ordered = e0>e1? t1 - t0 : t0 - t1;   
+   double e0,e1,t0,t1;
+   if(energies->at(0)>energies->at(1)) {
+      e0 = energies->at(0);
+      t0 = times->at(0);
+      e1 = energies->at(1);
+      t1 = times->at(1);
+   }
+   else {
+      e0 = energies->at(1);
+      t0 = times->at(1);
+      e1 = energies->at(0);
+      t1 = times->at(0);
+   }
+
    double DT = t1 - t0;
+   double rE = e1/e0;
+
+   histSvc->BookFillHist("deltaT",1600,-800,800,DT);
+   histSvc->BookFillHist("deltaT_vs_t0",1600,-800,800,200,0,600e3,DT,t0);
+   histSvc->BookFillHist("deltaT_vs_E0",1600,-800,800,4000,0,4e3,DT,e0);
+   histSvc->BookFillHist("deltaT_vs_E1",1600,-800,800,4000,0,4e3,DT,e1);
+   histSvc->BookFillHist("deltaT_vs_rE",1600,-800,800,1000,0,1,DT,e1);
+
+
+   if(single_island) {
+      histSvc->SetIslandNums(single_island);
+      histSvc->BookFillHist("deltaT",1600,-800,800,DT);
+      histSvc->BookFillHist("deltaT_vs_t0",1600,-800,800,200,0,600e3,DT,t0);
+      histSvc->BookFillHist("deltaT_vs_E0",1600,-800,800,4000,0,4e3,DT,e0);
+      histSvc->BookFillHist("deltaT_vs_E1",1600,-800,800,4000,0,4e3,DT,e1);
+      histSvc->BookFillHist("deltaT_vs_rE",1600,-800,800,1000,0,1,DT,rE);
+   }
 
 
 
-   histSvc->BookFillHist("deltaT",1600,-800,800,DT_ordered);
-   if(single_island) histSvc->BookFillHist("single_deltaT",1600,-800,800,DT_ordered);
 
-   histSvc->BookFillHist("deltaT_vs_t0",1600,-800,800,200,0,600e3,DT_ordered,t);
-   if(single_island) histSvc->BookFillHist("single_deltaT_vs_t0",1600,-800,800,200,0,600e3,DT_ordered,t);
 }

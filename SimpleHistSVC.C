@@ -50,7 +50,7 @@ std::string SimpleHistSVC::GetFullName(std::string name) {
     //islandNums
     if(islandNums!=default_int && islandNums>0) {
         if(islandNums==1) {
-            full_name += std::string("_oneIsland");
+            full_name += std::string("_singleIsland");
         }
         else if(islandNums==2){
             full_name += std::string("_twoIsland");
