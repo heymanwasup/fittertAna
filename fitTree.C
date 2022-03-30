@@ -18,6 +18,10 @@ void fitTree::Loop(int events)
       if (events>0 && jentry>=events) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       
+      if(jentry%100000==0) {
+         std::cout << "Processed "<< jentry << std::endl;
+      }
+
       histSvc->InitNameTags();
       histSvc->SetProcessTag("fitter_ana");
 
@@ -36,7 +40,7 @@ void fitTree::Ana_deltaT() {
    for(auto laserHit : *laserHits) {
       if(laserHit) return;
    }
-   
+
    bool single_island = false;
    if(islandNums->size()==1 && chainedIslandNums->size()==1) single_island = true;
 
